@@ -1,6 +1,26 @@
 
+var limitWarningEl = document.querySelector("#limit-warning");
 // finds the html element all of the data will be displayed inside
 var issueContainerEl = document.querySelector("#issues-container");
+
+var repoName = document.querySelector("#repo-name");
+
+
+//pulls the repo name from index.html
+var getRepoName = function() {
+    //grabs repo from url query string
+    var queryString = document.location.search;
+    var repoName = queryString.split("=")[1];
+    if (repoName) {
+        // display repo name with comments
+        getRepoIssues(repoName);
+        repoNameEl.textContent = repoName;
+    } else {
+        //if no repo name was given redirect to the home page
+        document.location.replace("./index.html");
+    }
+    
+};
 
 // calles tthe github api for open issues
 var getRepoIssues = function(repo) {
@@ -14,10 +34,15 @@ var getRepoIssues = function(repo) {
         response.json().then(function(data) {
           displayIssues(data);
         });
+        
+        // check if api has paginated issues
+        if (response.headers.get("link")) {
+            displayWarning(repo)
+        }
       }
       else {
-        console.log(response);
-        alert("There was a problem with your request!");
+        // if not successful, redirect to homepage
+        document.location.replace("./index.html");
       }
     });
   };
@@ -63,5 +88,17 @@ var displayIssues = function(issues) {
     }
 };
 
+var displayWarning = function(repo) {
+    //add text to warning container
+    limitWarningEl.textContent = "To see more than 30 issues, vist ";
+    
+    var linkEl = document.createElement("a");
+    linkEl.textContent = "See More Issues on GitHub.com";
+    linkEl.setAttribute("href", "https://github.com/" + repo + "/issues");
+    linkEl.setAttribute("target", "_blank");
 
-getRepoIssues("sxz1alpha/Terran-project");
+    // append to warning container
+    limitWarningEl.appendChild(linkEl)
+};
+
+getRepoName();
