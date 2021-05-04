@@ -5,7 +5,7 @@
 This application is designed to search git repositories for issues that may require a developers assistance.
 
 As a budding developer i want to know which projects to use my skills
-So i built an app to find them.
+So i built an app to find git reposititories with issues based on what type of isses they were.
 
 
 **Link to deployed application:**
